@@ -1,0 +1,52 @@
+.leftTable {
+  display: inline-block;
+  width: 40vw;
+  margin-top: 18vh;
+  margin-left:5vw;
+}
+
+.rightTable {
+  flex: none;
+  float: right;
+  width: 40vw;
+  margin-top:18vh;
+  margin-right: 5vw;
+}
+
+.mainTitle {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10vh
+}
+
+.columnTitel {
+  width: 10vw;
+  text-align: center;
+}
+
+.employees {
+  margin-left:5vw;
+  border-bottom: 1px solid black;
+  display: flex;
+  width: 30vw;
+}
+
+.cars {
+  border-bottom: 1px solid black;
+  display: flex;
+  width: 30vw;
+  margin-left: 5vw;
+}
+
+.idTitel {
+  width: 2vw;
+  text-align: center;
+}
+
+.brandTitel {
+  width: 8vw;
+  text-align: center;
+}

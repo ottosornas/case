@@ -1,0 +1,18 @@
+.flexContainer {
+    display: flex;
+    align-items: center;
+    margin: 10vh 0 15vh 0;
+    flex-direction: column;
+    
+  }
+
+.salesListing {
+    border-bottom: 1px solid black;
+    display: flex;
+    width: 30vw;
+}
+
+.columnTitel {
+    width: 10vw;
+    text-align: center;
+}
