@@ -8,7 +8,8 @@ class Profile extends Component {
     constructor (props) {
         super(props);
         this.state = {
-            sales:[]
+            sales:[],
+            id: ""
         }
     }
 
@@ -20,6 +21,7 @@ class Profile extends Component {
         fetch("/api/getSales")
         .then(data => data.json())
         .then(res => this.setState({ sales: res.data}));
+        this.setState({id: sessionStorage.getItem("id")})
     }
 
     render () {
@@ -51,7 +53,7 @@ class Profile extends Component {
                                 <h6>Price</h6>
                             </div>
                         </div>
-                        <ListSales data={this.state.sales}/>
+                        <ListSales data={this.state}/>
                 </div>
             </div>
         );

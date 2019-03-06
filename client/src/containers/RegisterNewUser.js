@@ -7,7 +7,7 @@ import { Redirect } from 'react-router-dom';
 
 
 
-class Register extends Component {
+class RegisterNewUser extends Component {
 
     constructor (props) {
     super(props);
@@ -15,12 +15,24 @@ class Register extends Component {
         name: "",
         email: "",
         password: "",
+        employee_id: "",
+        employees: [],
+        isEmployee: false,
         redirect: false,
         goBack: false,
         isAdmin: false
     }
 }
 
+componentDidMount() {
+    this.getEmployees();
+}
+
+getEmployees = () => {
+    fetch("/api/getEmployees")
+    .then(data => data.json())
+    .then(res => this.setState({ employees: res.data }));
+}
 
 validateForm() {
     return (
@@ -38,34 +50,39 @@ validateForm() {
 
   addNewUser = async event => {
     event.preventDefault();
+    if(this.state.isEmployee){
+        var currentids = this.state.employees.map(id => id.id);
+        let idToBeAdded = 1;
+        while (currentids.includes(idToBeAdded)) {
+        ++idToBeAdded;
+        }
+        this.state.employee_id = idToBeAdded;
+    }
+
     try {
         await axios.post("/api/putUser", {
             name: this.state.name,
             email: this.state.email,
             password: this.state.password,
-            employee_id: "",
-            admin: false
+            employee_id: this.state.employee_id,
+            admin: this.state.isAdmin
         })
 
     } catch (e) {
         alert(e.message);
         window.location.reload();
     }
+    if (this.state.isEmployee) this.addEmployee();
         alert("User created");
-    try {
-        await axios.post("/api/login", {
-            email: this.state.email,
-            password: this.state.password,
-        })
-        sessionStorage.setItem("isLoggedIn", true);
-        sessionStorage.setItem("email", this.state.email);
-        this.renderHome();
-
-    } catch (e) {
-        alert(e.message);
-    }
   }
 
+addEmployee = () => {
+    axios.post("/api/putEmployee", {
+        id: this.state.employee_id,
+        name: this.state.name,
+        sales: 0
+    })
+}
 
 renderHome = () => {
     this.setState({redirect: true});
@@ -86,11 +103,15 @@ goBack = () => {
 }
 
 render() {
+    if(sessionStorage.getItem("admin") !== "true"){
+        alert("You need to be an admin in order to view this page!");
+        return <Redirect push to="/" />
+    }
     const { validated } = this.state;
     if(this.state.redirect) {
-        return <Redirect push to="/" />;
+        return <Redirect push to="/admin" />;
     }else if(this.state.goBack) {
-        return <Redirect push to="/" />;
+        return <Redirect push to="/admin" />;
     }
     return (
        <div className="Register">
@@ -130,13 +151,17 @@ render() {
                     required
                     />
                 </Form.Group>
+                <Form.Group controlId="formBasicChecbox">
+                <label><input type="checkbox"  onClick={ () => {this.setState({isEmployee : !this.state.isEmployee }); }}/>Employee</label>
+                <label><input type="checkbox"  style={{marginLeft: '1vw'}} onClick={ () => {this.setState({isAdmin : !this.state.isAdmin }); }}/>Admin</label>
+                </Form.Group>
                 <Button 
                     block
                     variant="primary"
                     type="submit"
                     disabled={!this.validateForm()}
                 >
-                    Register
+                    Register new user
                 </Button>
                 <Button
                     block
@@ -151,4 +176,4 @@ render() {
   }
 }
 
-export default Register;
+export default RegisterNewUser;

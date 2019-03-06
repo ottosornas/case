@@ -9,7 +9,8 @@ class CarItems extends Component {
             width: '30vw',
             margin: 'auto',
             display: 'flex',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            alignItems: 'center'
         }
     }
 

@@ -6,6 +6,8 @@ import Register from "./containers/Register"
 import Admin from "./containers/Admin";
 import Profile from "./containers/Profile";
 import AddCar from "./containers/AddCar";
+import EditUser from "./containers/EditUser";
+import RegisterNewUser from "./containers/RegisterNewUser";
 
 const ReactRouter = () => {
     return (
@@ -17,6 +19,8 @@ const ReactRouter = () => {
                 <Route path="/admin" component={Admin}/>
                 <Route path="/profile" component={Profile} />
                 <Route path="/addCar" component={AddCar} />
+                <Route path="/editUser" component={EditUser} />
+                <Route path="/registerNewUser" component={RegisterNewUser} />
             </Switch>
         </Router>
     );

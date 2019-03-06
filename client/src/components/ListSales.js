@@ -45,7 +45,7 @@ returnSale = (sale) => {
     render() {
         return(
             <div style={this.getStyle()}>    
-                    {this.props.data.map((sale) => this.returnSale(sale))}
+                    {this.props.data.sales.map((sale) => this.returnSale(sale))}
                 
             </div>
             ); 

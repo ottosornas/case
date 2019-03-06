@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Button from 'react-bootstrap/Button';
 
 class DBItems extends Component {
     
@@ -10,7 +9,9 @@ class DBItems extends Component {
             width: '30vw',
             margin: 'auto',
             display: 'flex',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            height: '6vh',
+            alignItems: 'center'
         }
     }
 

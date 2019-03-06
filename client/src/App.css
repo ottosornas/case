@@ -1,15 +1,16 @@
 .leftTable {
   display: inline-block;
   width: 40vw;
-  margin-top: 18vh;
+  margin-top: 10vh;
   margin-left:5vw;
 }
 
 .rightTable {
-  flex: none;
+  display: flex;
+  flex-direction: column;
   float: right;
   width: 40vw;
-  margin-top:18vh;
+  margin-top:10vh;
   margin-right: 5vw;
 }
 
@@ -21,10 +22,43 @@
   justify-content: center;
   margin-top: 10vh
 }
+.carTitel {
+  margin-left:5vw;
+  margin-bottom: 1.5vh;
+  text-align: center;
+  width: 30vw;
+}
 
+.employeeTitel {
+  margin-left:5vw;
+  margin-bottom: 3vh;
+  text-align: center;
+  width:30vw;
+}
 .columnTitel {
   width: 10vw;
   text-align: center;
+}
+
+.adminTitel {
+  width: 6vw;
+  text-align: center;
+  margin-left: 1vh;
+}
+
+.buttonTitel {
+  width: 7vw;
+  text-align: center;
+  margin-left: 1vh;
+}
+
+.titel {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid black;
+  margin-left: 28vw;
+  margin-top:5vh;
+  width: 44vw;
 }
 
 .employees {

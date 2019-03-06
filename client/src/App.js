@@ -32,11 +32,13 @@ class App extends Component {
     this.state.users.map(user => {
       if(user.email === sessionStorage.getItem("email")) {
         sessionStorage.setItem("name", user.name);
-        console.log(user.isAdmin);
         sessionStorage.setItem("admin", user.isAdmin);
         this.state.employees.map(employee => {
+          console.log("comparing: " + employee.name + " " +  user.name + (employee.name === user.name));
           if(employee.name === user.name) {
+            console.log(employee.id);
             sessionStorage.setItem("id", employee.id);
+            console.log(sessionStorage.getItem("id"))
           }
         })
       }
@@ -80,18 +82,16 @@ class App extends Component {
     
     fetch("/api/getCarmodels")
       .then(data => data.json())
-      .then(res => this.setState({ carmodels: res.data }));
+      .then(res => this.setState({ carmodels: res.data }))
     
     fetch("/api/getSales")
       .then(data => data.json())
-      .then(res => this.setState({ sales: res.data}));
-
+      .then(res => this.setState({ sales: res.data }))
     };
 
   updateEmployee = (idToUpdate, updateToApply) => {
     let objIdToUpdate = null;
     let newSaleSum = 0;
-    this.setState({visible: false});
     this.state.employees.forEach(dat => {
       if (dat.id === idToUpdate) {
         objIdToUpdate = dat._id;
@@ -113,9 +113,18 @@ class App extends Component {
         objIdToDelete = car._id;
       }
     }); 
-    axios.post("/deleteCar", {
-      id: objIdToDelete
-    })
+    
+    try {
+      axios.delete("/api/deleteCar", {
+        data: {
+          id: objIdToDelete
+        }
+      })
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      window.location.reload();
+    }
   }
 
   addNewCar = () => {
@@ -139,39 +148,45 @@ class App extends Component {
         <Button variant="primary" onClick={() => this.addNewCar()}>Add new car</Button>
       </div>
       <div className={"leftTable"}>
-      <div className={'employees'}>
-        <div className={"columnTitel"}>
-          <h6>Employee ID</h6>
+      <div className={"employeeTitel"}>
+        <h3>EMPLOYEES<hr /></h3>
         </div>
-        <div className={"columnTitel"}>
-            <h6>Name</h6>
+        <div className={'employees'}>
+          <div className={"columnTitel"}>
+            <h6>Employee ID</h6>
+          </div>
+          <div className={"columnTitel"}>
+              <h6>Name</h6>
+          </div>
+          <div className={"columnTitel"}>
+              <h6>Total Sales</h6>
+          </div>
         </div>
-        <div className={"columnTitel"}>
-            <h6>Total Sales</h6>
+          {employees.length <= 0
+          ? "NO EMPLOYEES"
+          : <DataToShow data={this.state.employees}/> } 
         </div>
-      </div>
-        {employees.length <= 0
-        ? "NO EMPLOYEES"
-        : <DataToShow data={this.state.employees}/> } 
-      </div>
       <div className={"rightTable"}>
-      <div className={'cars'}>
-      <div className={"idTitel"}>
-          <h6>ID</h6>
+        <div className={"carTitel"}>
+        <h3>CARS <hr /></h3>
         </div>
-        <div className={"brandTitel"}>
-          <h6>Brand</h6>
+        <div className={'cars'}>
+        <div className={"idTitel"}>
+            <h6>ID</h6>
+          </div>
+          <div className={"brandTitel"}>
+            <h6>Brand</h6>
+          </div>
+          <div className={"columnTitel"}>
+              <h6>Model</h6>
+          </div>
+          <div className={"columnTitel"}>
+              <h6>Price</h6>
+          </div>
         </div>
-        <div className={"columnTitel"}>
-            <h6>Model</h6>
-        </div>
-        <div className={"columnTitel"}>
-            <h6>Price</h6>
-        </div>
-      </div>
-        {carmodels.length <= 0
-        ? "NO CARS"
-        : <CarsToShow data={this.state.carmodels} delCar={this.delCar}/> } 
+          {carmodels.length <= 0
+          ? "NO CARS"
+          : <CarsToShow data={this.state.carmodels} delCar={this.delCar}/> } 
       </div>
     </div>
     );

@@ -1,100 +1,116 @@
 import React, {Component} from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
+import Header from '../components/Header';
+import UsersToShow from '../components/UsersToShow';
+import '../App.css';
+import Button from 'react-bootstrap/Button';
 
 class Admin extends Component {
-    putEmployee = (id, name) => {
-        var currentEmployeeIds = this.state.employees.map(employee => employee.id);
-        if(!currentEmployeeIds.includes(id)){ 
-          axios.post("/api/putEmployee", {
-            id: id,
-            name: name,
-            sales: 0
-          });
-        } 
-      }
-    
-      putCarmodel = (id, brand, model, price) => {
-        var currentModelIds = this.state.carmodels.map(model => model.id);
-        if(!currentModelIds.includes(id)){ 
-          axios.post("/api/putCarmodel", {
-            id: id,
-            brand: brand,
-            model: model,
-            price: price
-          });
-        }
-      }
-       // our put method that uses our backend api
-  // to create new query into our data base
-  putDataToDB = message => {
-    let currentIds = this.state.data.map(data => data.id);
-    let idToBeAdded = 0;
-    while (currentIds.includes(idToBeAdded)) {
-      ++idToBeAdded;
+  constructor (props) {
+    super(props);
+    this.state = {
+        users: [],
+        update: false,
+        userToUpdate: {},
+        addCar: false
     }
-    axios.post("/api/putData", {
-      id: idToBeAdded,
-      message: message
-    });   
-  };
+}
 
+  componentDidMount() {
+    this.getUsers();
+  }
 
-  // our delete method that uses our backend api 
-  // to remove existing database information
-  deleteFromDB = idTodelete => {
-    let objIdToDelete = null;
-    this.state.data.forEach(dat => {
-      if (dat.id === idTodelete) {
-        objIdToDelete = dat._id;
+  getUsers = () => {
+    fetch("/api/getUsers")
+      .then(data => data.json())
+      .then(res => this.setState({ users: res.data }));
+  }
+
+  putEmployee = (id, name) => {
+      var currentEmployeeIds = this.state.employees.map(employee => employee.id);
+      if(!currentEmployeeIds.includes(id)){ 
+        axios.post("/api/putEmployee", {
+          id: id,
+          name: name,
+          sales: 0
+        });
+      } 
+    }
+
+  updateUser = (user) => {
+    console.log(user);
+    this.setState({
+      userToUpdate: user,
+      update: true});
+  }
+
+  delUser = (emailToDelete) => {
+    var objIdToDelete;
+    this.state.users.map(user => {
+      if(emailToDelete === user.email) {
+        objIdToDelete = user._id;
       }
-    }); 
-
-    axios.delete("/api/deleteData", {
+    })
+    
+    axios.delete("/api/deleteUser", {
       data: {
         id: objIdToDelete
       }
     });
-  };
-  updateID = (newID) => {
-    console.log('NewID: ' + newID);
-    this.setState({
-      idToUpdate: newID,
-      visible: true
-    })
-
+    window.location.reload();
   }
-                /* <div>
-                    {data.length <= 0
-                    ? "NO DB ENTRIES YET"
-                    : <DataToShow data={this.state.employees} delItem={this.deleteFromDB} updateID={this.updateID}/> } 
-               </div>
-               <div className={buttonVisibilty}>
-               <input
-                 type="text"
-                 className={"updateTextBar"}
-                 onChange={e => this.setState({ updateToApply: e.target.value })}
-                 placeholder="Put new value of the item here"
-                 />
-               <Button variant="primary"
-                 onClick={() =>
-                   this.updateDB(this.state.idToUpdate, this.state.updateToApply)
-                 }
-                 >
-                 UPDATE
-               </Button>
-             </div> */
+
+  addNewUser = () => {
+    this.setState({addCar: true});
+  }
+
     render () {
-        if(!sessionStorage.getItem("admin")){
+        if(sessionStorage.getItem("admin") !== "true"){
             alert("You need to be an admin in order to view this page!");
             return <Redirect push to="/" />
-          }
+        }else if(this.state.update){
+          return <Redirect to={{
+            pathname: '/editUser',
+            state: {userToUpdate: this.state.userToUpdate}
+          }} />
+        }else if(this.state.addCar) {
+          return <Redirect to="/registerNewUser" />
+        }
+
+        const {users} = this.state;
         return(
             <div>
-                <h1>
-                    ADMIN PAGE
-                </h1>
-                
+                <Header />
+                <div className={"titelDiv"}>
+                  <div className="mainTitle">
+                    <h1>Admin page<hr /></h1>
+                    <h4><p>Table of all users</p></h4>
+                    <Button variant="primary" onClick={() => this.addNewUser()}>Add new user</Button>
+                  </div>
+                  <div className={'titel'}>
+                    <div className={"columnTitel"}>
+                      <h6>Employee ID</h6>
+                    </div>
+                    <div className={"columnTitel"}>
+                        <h6>Name</h6>
+                    </div>
+                    <div className={"columnTitel"}>
+                        <h6>Email</h6>
+                    </div>
+                    <div className={"adminTitel"}>
+                        <h6>Admin</h6>
+                    </div>
+                    <div className={"buttonTitel"}>
+                        <h6>Edit/delete user</h6>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  {users.length <= 0
+                  ? "NO USER ENTRIES YET"
+                  : <UsersToShow data={this.state.users} updateUser={this.updateUser} delUser={this.delUser} /> } 
+               </div>
             </div>
 
         )

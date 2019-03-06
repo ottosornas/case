@@ -107,7 +107,7 @@ class Header extends Component {
                 </Button>
             </div>
             <div style={this.getWelcomeTextstyle()}>
-                <Navbar.Brand>Welcome, {sessionStorage.getItem("name")}</Navbar.Brand>
+                <Navbar.Brand>Logged in as: {sessionStorage.getItem("name")}</Navbar.Brand>
             </div>
             <Navbar.Collapse className="justify-content-end">
                 <Nav>

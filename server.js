@@ -143,16 +143,6 @@ router.post("/putSale", (req, res) => {
     });
 })
 
-
-// this is our get method
-// this method fetches all available data in our database
-router.get("/getData", (req, res) => {
-    Data.find((err, data) => {
-      if (err) return res.json({ success: false, error: err });
-      return res.json({ success: true, data: data });
-    });
-  });
-
 router.get("/getUsers", (req, res) => {
     Users.find((err, data) => {
         if (err) return res.json({ success: false, error: err});
@@ -173,6 +163,13 @@ router.get("/getCarmodels", (req, res) => {
         return res. json({ success: true, data: data});
     });;
 });
+
+router.get("/getSales", (req, res) => {
+    Sales.find((err, data) => {
+        if (err) return res.json({ success: false, error: err});
+        return res. json({ success: true, data: data});
+    });;
+});
     
 // this is our update method
 // this method overwrites existing data in our database
@@ -182,15 +179,40 @@ router.post("/updateSales", (req, res) => {
     var updater = update;
 
     Employees.findOneAndUpdate(query, updater, function(err, dat) {
-    if (err) {
-    console.log('got an error' + err);
-  }
-
-  // at this point person is null.
+        if (err) {
+            console.log('got an error' + err);
+        }
+    });
 });
 
+router.post("/updateUser", (req, res) => {
+    const { id, password, name, email, employee_id, admin } = req.body;
+    var query = {"_id": id};
 
-
+    if(password.length > 0) {
+        bcrypt.hash(password, 10, (err, hash) => {
+            if (err) return throwError(err, res);
+            var updater = {
+                name: name,
+                email: email,
+                password: hash,
+                employee_id: employee_id,
+                isAdmin: admin
+            }      
+        })
+    }else {
+        var updater = {
+            name: name,
+            email: email,
+            employee_id: employee_id,
+            isAdmin: admin
+        }       
+    }
+    Users.findOneAndUpdate(query, updater, function(err, dat) {
+        if (err) {
+            console.log('got an error' + err);
+        }
+    });
 });
 
 // this is our delete method
@@ -204,24 +226,24 @@ router.delete("/deleteCar", (req, res) => {
     });
 });
 
-// this is our create methid
-// this method adds new data in our database
-router.post("/putData", (req, res) => {
-    let data = new Data();
-    const { id, message } = req.body;
-    if ((!id && id !== 0) || !message) {
-        return res.json({
-            success: false,
-            error: "INVALID INPUTS"
-        });
-    }
-    data.message = message;
-    data.id = id;
-    data.save(err => {
-        if (err) return res.json({ success: false, error: err });
-        return res.json({ success: true });
+router.delete("/deleteEmployee", (req, res) => {
+    const { id } = req.body;
+    var idToDelete = {"_id": id};
+    console.log(idToDelete);
+    Employees.findOneAndDelete(idToDelete, function(err, offer) {
+        if (err) console.log(err);
     });
 });
+
+router.delete("/deleteUser", (req, res) => {
+    const { id } = req.body;
+    var idToDelete = {"_id": id};
+    console.log(idToDelete);
+    Users.findOneAndDelete(idToDelete, function(err, offer) {
+        if (err) console.log(err);
+    });
+});
+
 
 // append /api for our http requests
 app.use("/api", router);

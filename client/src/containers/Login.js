@@ -95,7 +95,7 @@ render() {
                 variant="secondary"
                 onClick={this.renderRegister}
             >
-                Register new user
+                Not a user? Register here!
             </Button>
             </Form>
 
